@@ -1,0 +1,20 @@
+﻿@{
+    ViewData["Title"] = "TOP 3";
+}
+@model CognizantChallenge.Models.TopUsers.TopUsersModel
+
+<table class="top-users-table">
+    <tr class="header">
+        <th>Name</th>
+        <th>Scores</th>
+        <th>Tasks</th>
+    </tr>
+    @foreach (var user in Model.TopUsers)
+    {
+        <tr class="data">
+            <td>@user.Name</td>
+            <td>@user.Scores</td>
+            <td>@user.Tasks</td>
+        </tr>
+    }
+</table>

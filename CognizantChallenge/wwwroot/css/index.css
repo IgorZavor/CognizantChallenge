@@ -1,0 +1,34 @@
+﻿form {
+    display: flex;
+    width: 630px;
+    flex-direction: column;
+}
+
+form .form-row{
+    width: 100%;
+    margin-bottom: 30px;
+}
+
+form .form-row .title{
+    flex: 1;
+}
+
+form .form-row .data{
+    flex: 2;
+}
+
+#btn-create-user{
+    margin-left: 10px;
+    position: relative;
+    top: 3px;
+}
+
+.form-data .hidden{
+    visibility: hidden;
+}
+
+.main-body{
+    display: flex;
+    padding-top: 30px;
+    align-items: baseline;
+}

@@ -1,0 +1,38 @@
+﻿@{
+    ViewData["Title"] = "Solve";
+}
+
+<div class="main-body">
+    <form class="form-data">
+        <div class="form-row">
+            <div class="title">Name</div>
+            <input class="data name" user-id="0"/>
+        </div>
+        <div class="user-part hidden">
+            <div class="form-row">
+                <div class="title">Select Task</div>
+                <select class="data challenges">
+    
+                </select>
+            </div>
+            <div class="form-row">
+                        <div class="title">Select Language</div>
+                        <select class="data languages"></select>
+                    </div>
+            <div class="form-row">
+                <div class="title">Description</div>
+                <div class="data description"></div>
+            </div>
+            <div class="form-row">
+                <div class="title">Solution Code</div>
+                <textarea class="data script"></textarea>
+            </div>
+            <div class="form-row">
+                <div class="title"></div>
+                <button class="btn btn-secondary data" id="btn-send">Submit</button>
+            </div>
+        </div>
+    
+    </form>
+    <button type="button" class="btn data btn-info" id="btn-create-user">Create</button>
+</div>

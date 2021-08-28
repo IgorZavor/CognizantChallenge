@@ -1,0 +1,18 @@
+﻿.top-users-table {
+    width: 600px;
+    margin-top: 50px;
+}
+
+.top-users-table  .header{
+    background-color: #37a0de;
+    height: 80px;
+    color: white;
+    text-align: center;
+}
+
+.top-users-table  .data {
+    height: 80px;
+    text-align: center;
+    font-weight: 700;
+    border-bottom: 1px solid #666;
+}

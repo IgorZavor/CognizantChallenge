@@ -1,0 +1,20 @@
+﻿.navbar-menu{
+    overflow: hidden;
+    height: 90px;
+    background-color: #0333a0;
+    display: flex;
+    align-items: center;
+}
+
+.navbar-menu .navbar-nav{
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+.navbar-menu .navbar-nav  li+li{
+    margin-left: 10px;
+}
+
+.navbar-nav button {
+    width: 120px;
+}
