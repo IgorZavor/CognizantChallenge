@@ -1,6 +1,5 @@
 ﻿(function (){
     $('#btn-send').click(() => {
-        debugger;
         $.ajax({
             url: '/CheckTask',
             type: 'POST',
@@ -11,7 +10,6 @@
                 challengeId: $('.challenges option:selected').attr('challenge-id')
             },
             success: (response) => {
-                debugger;
                 const msg = response.message;
                 if (!response.error){
                     $('.challenges option:selected').remove();
@@ -42,7 +40,6 @@
     })
     
     function createNewUser(){
-        debugger
         $.ajax({
             url: '/CreateUser',
             type: 'POST',
@@ -87,7 +84,6 @@
     }
 
     function createAnotherUser() {
-        debugger
         clearStorage();
         $('.user-part ').addClass('hidden');
         changeCreateButtonState();
@@ -120,7 +116,6 @@
     }
     
     function changeCreateButtonState(){
-        debugger
         const user = getFromStorage('User');
         if (user && user.id){
             $('#btn-create-user').unbind('click').text('Create Another').click(createAnotherUser)   
