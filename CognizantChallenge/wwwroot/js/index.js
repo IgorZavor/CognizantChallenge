@@ -30,16 +30,19 @@
     });
 
     $('.challenges').change(() => {
+        const challenges = getFromStorage('Challenges');
         const id = parseInt($('.challenges option:selected').attr('challenge-id'));
         $('.description').text(challenges.find(ch => ch.id === id).description);
     });
     
     $('.languages').change((el) => {
+        const languages = getFromStorage('Languages');
         const id = parseInt($('.languages option:selected').attr('language-id'));
         $('.script ').text(languages.find(l => l.id === id).template);
     })
     
     function createNewUser(){
+        debugger
         $.ajax({
             url: '/CreateUser',
             type: 'POST',
@@ -51,7 +54,6 @@
                 const challenges = response.challenges.map(ch => ({id: ch.id, name: ch.name, description: ch.description }));
                 const languages = response.languages.map(l => ({ id:l.id, name: l.name, template: l.template, requestedName: l.requestedName }));
                 setStorage(response.user, languages, challenges);
-                setStorage()
                 setUser(response.user);
                 fillChallengesOptions(challenges);
                 fillLanguagesOptions(languages);
@@ -77,11 +79,18 @@
         sessionStorage.removeItem('Languages');
         sessionStorage.removeItem('Challenges');
     }
+    
+    function getFromStorage(key){
+        const sessionStorage = window.sessionStorage;
+        const item = sessionStorage.getItem(key);
+        return item && JSON.parse(item) || null;
+    }
 
-    function createNewAnotherUser() {
+    function createAnotherUser() {
+        debugger
         clearStorage();
         $('.user-part ').addClass('hidden');
-        $('#btn-create-user').val('Create').click(createNewUser);
+        changeCreateButtonState();
     }
     
     function fillChallengesOptions(challenges) {
@@ -110,17 +119,19 @@
         $('.user-part ').removeClass('hidden');
     }
     
-    function changeCreateButtonState(user){
+    function changeCreateButtonState(){
+        debugger
+        const user = getFromStorage('User');
         if (user && user.id){
-            $('#btn-create-user').val('Create Another').click(createNewAnotherUser)   
+            $('#btn-create-user').unbind('click').text('Create Another').click(createAnotherUser)   
         }
         else {
-            $('#btn-create-user').val('Create').click(createNewUser)
+            $('#btn-create-user').unbind('click').text('Create').click(createNewUser)
         }
     }
     
-    const user = window.sessionStorage.getItem('User')
-    if (window.sessionStorage.getItem('User')){
+    const user = getFromStorage('User')
+    if (user){
         setUser(JSON.parse(window.sessionStorage.getItem('User')));
         const languages = JSON.parse(sessionStorage.getItem('Languages'));
         fillLanguagesOptions(languages)
@@ -128,7 +139,7 @@
         fillChallengesOptions(challenges);
         setDescription(challenges);
     }
-    changeCreateButtonState(user);
+    changeCreateButtonState();
 })()
 
 
