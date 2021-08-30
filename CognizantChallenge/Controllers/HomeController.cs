@@ -81,8 +81,8 @@ namespace CognizantChallenge.Controllers
 
                 var challengeName = challengeRepo.GetEntity(model.ChallengeId).Name;
 
-                user.Tasks += " " + challengeName;
                 user.Scores += 1;
+                user.Tasks += challengeName + "\n";
                 _unitOfWork.Save();
                 message = "Congratulation! The task has been completed successfully!";
             }
@@ -94,9 +94,9 @@ namespace CognizantChallenge.Controllers
             return new JsonResult(new {Message = message, Error = false});
         }
 
-        [Route("CreateUser")]
+        [Route("CreateUserAndGetData")]
         [HttpPost]
-        public async Task<IActionResult> CreateUser(string name)
+        public async Task<IActionResult> CreateUserAndGetData(string name)
         {
             var user = new User(){ Name = name, Scores = 0};
             IEnumerable<LanguageModel> languages = null;
@@ -138,6 +138,36 @@ namespace CognizantChallenge.Controllers
             {
                 Languages = languages,
                 Challenges = challenges,
+                User = new UserModel{Id = user.Id, Name = user.Name},
+                Error= false,
+                Message= "",
+            });
+        }
+
+        [Route("CreateUser")]
+        [HttpPost]
+        public IActionResult CreateUser(string name)
+        {
+            var user = new User(){ Name = name, Scores = 0};
+            try
+            {
+                var userRepo = _unitOfWork.UsersRepository;
+                userRepo.Insert(user);
+                _unitOfWork.Save();
+                _logger.LogInformation($"User {user.Name} has been created");
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError($"There is something wrong: " + ex);
+                return new JsonResult(new
+                {
+                    User = new UserModel{Id = user.Id, Name = user.Name},
+                    Error= true,
+                    Message= "There is something wrong: " + ex,
+                });
+            }
+            return new JsonResult(new
+            {
                 User = new UserModel{Id = user.Id, Name = user.Name},
                 Error= false,
                 Message= "",

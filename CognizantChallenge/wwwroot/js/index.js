@@ -12,17 +12,19 @@
             success: (response) => {
                 const msg = response.message;
                 if (!response.error){
+                    alert(msg);
                     $('.challenges option:selected').remove();
-                    const challenges = JSON.parse(sessionStorage.getItem('Challenges'));
-                    setDescription(challenges);
+                    setDescription();
+                    if (!$('.challenges option').length){
+                        $('.btn-send').attr('disabled');
+                        alert('You have done all tasks!!');
+                    }
                 }
-
-                alert(msg);
-                
+                else{
+                    alert(msg);
+                }
             },
-            fail: () => {
-                
-            }
+            fail: () => {}
         });
         return false;
     });
@@ -40,27 +42,51 @@
     })
     
     function createNewUser(){
+        debugger
+        let method = '/CreateUserAndGetData';
+        let isDataFilled = !!(getFromStorage('Languages') && getFromStorage('Challenges'));
+        if (isDataFilled) {
+            method = '/CreateUser'
+        }
         $.ajax({
-            url: '/CreateUser',
+            url: method,
             type: 'POST',
             dataType: 'json',
             data: {
                 name: $(".name").val(),
             },
             success: (response) => {
-                const challenges = response.challenges.map(ch => ({id: ch.id, name: ch.name, description: ch.description }));
-                const languages = response.languages.map(l => ({ id:l.id, name: l.name, template: l.template, requestedName: l.requestedName }));
-                setStorage(response.user, languages, challenges);
+                if (!isDataFilled) {
+                    createUserAndGetDataSuccess(response);
+                }
+                else{
+                    createUserSuccess(response.user)
+                }
                 setUser(response.user);
-                fillChallengesOptions(challenges);
-                fillLanguagesOptions(languages);
-                setDescription(challenges);
                 changeCreateButtonState();
+                $('.btn-send').removeAttr('disabled');
             },
-            fail: () => {
-
-            }
+            fail: () => {}
         });
+    }
+    
+    function createUserAndGetDataSuccess(response){
+        const challenges = response.challenges.map(ch => ({id: ch.id, name: ch.name, description: ch.description }));
+        const languages = response.languages.map(l => ({ id:l.id, name: l.name, template: l.template, requestedName: l.requestedName }));
+        setStorage(response.user, languages, challenges);
+        fillChallengesOptions();
+        fillLanguagesOptions();
+        setDescription();
+    }
+    
+    function createUserSuccess(user){
+        setItemToStorage('User', user);
+    }
+    
+    
+    function setItemToStorage(key, item){
+        const sessionStorage = window.sessionStorage;
+        sessionStorage.setItem(key, JSON.stringify(item));
     }
     
     function setStorage(user, languages, challenges){
@@ -70,11 +96,9 @@
         sessionStorage.setItem('Challenges', JSON.stringify(challenges));
     }
     
-    function clearStorage(){
+    function removeItemFromStorage(key){
         const sessionStorage = window.sessionStorage;
-        sessionStorage.removeItem('User');
-        sessionStorage.removeItem('Languages');
-        sessionStorage.removeItem('Challenges');
+        sessionStorage.removeItem(key);
     }
     
     function getFromStorage(key){
@@ -84,26 +108,28 @@
     }
 
     function createAnotherUser() {
-        clearStorage();
+        removeItemFromStorage('User');
         $('.user-part ').addClass('hidden');
+        $('.name').val('');
         changeCreateButtonState();
     }
     
-    function fillChallengesOptions(challenges) {
+    function fillChallengesOptions() {
+        const challenges = JSON.parse(sessionStorage.getItem('Challenges'));
         challenges.forEach(challenge  => {
             $('.challenges').append(`<option challenge-id='${challenge.id}'>${challenge.name}</option>`);
         })
         
     }
     
-    function setDescription (challenges){
+    function setDescription (){
+        const challenges = JSON.parse(sessionStorage.getItem('Challenges'));
         const selectedId = parseInt($('.challenges option:selected').attr('challenge-id'));
-        if (selectedId) {
-            $('.description').text(challenges.find(ch => ch.id === selectedId).description);
-        }
+        $('.description').text(selectedId && challenges && challenges.length && challenges.find(ch => ch.id === selectedId).description || '');
     }
     
-    function fillLanguagesOptions(languages) {
+    function fillLanguagesOptions() {
+        const languages = JSON.parse(sessionStorage.getItem('Languages'));
         languages.forEach(l => {
             $('.languages').append(`<option language-id=${l.id} requested-name='${l.requestedName}'>${l.name}</option>`)    
         })
@@ -128,13 +154,9 @@
     const user = getFromStorage('User')
     if (user){
         setUser(JSON.parse(window.sessionStorage.getItem('User')));
-        const languages = JSON.parse(sessionStorage.getItem('Languages'));
-        fillLanguagesOptions(languages)
-        const challenges = JSON.parse(sessionStorage.getItem('Challenges'));
-        fillChallengesOptions(challenges);
-        setDescription(challenges);
+        fillLanguagesOptions()
+        fillChallengesOptions();
+        setDescription();
     }
     changeCreateButtonState();
 })()
-
-

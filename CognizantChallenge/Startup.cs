@@ -46,10 +46,6 @@ namespace CognizantChallenge
             {
                 app.UseDeveloperExceptionPage();
             }
-            else
-            {
-                app.UseExceptionHandler("/Home/Error");
-            }
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
