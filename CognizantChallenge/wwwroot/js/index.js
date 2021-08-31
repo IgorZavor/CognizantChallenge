@@ -42,7 +42,6 @@
     })
     
     function createNewUser(){
-        debugger
         let method = '/CreateUserAndGetData';
         let isDataFilled = !!(getFromStorage('Languages') && getFromStorage('Challenges'));
         if (isDataFilled) {
@@ -65,6 +64,7 @@
                 fillChallengesOptions();
                 fillLanguagesOptions();
                 setUser(response.user);
+                setDescription();
                 changeCreateButtonState();
                 $('.btn-send').removeAttr('disabled');
             },
@@ -76,7 +76,6 @@
         const challenges = response.challenges.map(ch => ({id: ch.id, name: ch.name, description: ch.description }));
         const languages = response.languages.map(l => ({ id:l.id, name: l.name, template: l.template, requestedName: l.requestedName }));
         setStorage(response.user, languages, challenges);
-        setDescription();
     }
     
     function createUserSuccess(user){
