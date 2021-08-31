@@ -62,6 +62,8 @@
                 else{
                     createUserSuccess(response.user)
                 }
+                fillChallengesOptions();
+                fillLanguagesOptions();
                 setUser(response.user);
                 changeCreateButtonState();
                 $('.btn-send').removeAttr('disabled');
@@ -74,8 +76,6 @@
         const challenges = response.challenges.map(ch => ({id: ch.id, name: ch.name, description: ch.description }));
         const languages = response.languages.map(l => ({ id:l.id, name: l.name, template: l.template, requestedName: l.requestedName }));
         setStorage(response.user, languages, challenges);
-        fillChallengesOptions();
-        fillLanguagesOptions();
         setDescription();
     }
     
@@ -116,6 +116,7 @@
     
     function fillChallengesOptions() {
         const challenges = JSON.parse(sessionStorage.getItem('Challenges'));
+        $('.challenges option').remove();
         challenges.forEach(challenge  => {
             $('.challenges').append(`<option challenge-id='${challenge.id}'>${challenge.name}</option>`);
         })
@@ -130,6 +131,7 @@
     
     function fillLanguagesOptions() {
         const languages = JSON.parse(sessionStorage.getItem('Languages'));
+        $('.languages option').remove();
         languages.forEach(l => {
             $('.languages').append(`<option language-id=${l.id} requested-name='${l.requestedName}'>${l.name}</option>`)    
         })
