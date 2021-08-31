@@ -74,24 +74,34 @@ namespace CognizantChallenge.Controllers
             }
 
             var message = "";
-            if (Convert.ToBoolean(result.Output))
+            var error = false;
+            try
             {
-                var usersRepo = _unitOfWork.UsersRepository;
-                var user = usersRepo.GetEntity(model.UserId);
+                if (Convert.ToBoolean(result.Output))
+                {
+                    var usersRepo = _unitOfWork.UsersRepository;
+                    var user = usersRepo.GetEntity(model.UserId);
 
-                var challengeName = challengeRepo.GetEntity(model.ChallengeId).Name;
+                    var challengeName = challengeRepo.GetEntity(model.ChallengeId).Name;
 
-                user.Scores += 1;
-                user.Tasks += challengeName + "\n";
-                _unitOfWork.Save();
-                message = "Congratulation! The task has been completed successfully!";
+                    user.Scores += 1;
+                    user.Tasks += challengeName + ",\n";
+                    _unitOfWork.Save();
+                    message = "Congratulation! The task has been completed successfully!";
+                }
+                else
+                {
+                    message = "Sorry! You've got a wrong result!";
+                    error = true;
+                }
+                _logger.LogInformation(message);
             }
-            else
-            {
-                message = "Sorry! You've got a wrong result!";
+            catch {
+                _logger.LogError("Code contains errors: " + result.Output);
+                return new JsonResult(new { Message = "Output contains erorrs: "+ result.Output, Error = true });
             }
 
-            return new JsonResult(new {Message = message, Error = false});
+            return new JsonResult(new {Message = message, Error = error});
         }
 
         [Route("CreateUserAndGetData")]

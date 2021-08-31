@@ -18,6 +18,7 @@
                     if (!$('.challenges option').length){
                         $('.btn-send').attr('disabled');
                         alert('You have done all tasks!!');
+                        clearUserData();
                     }
                 }
                 else{
@@ -38,7 +39,7 @@
     $('.languages').change((el) => {
         const languages = getFromStorage('Languages');
         const id = parseInt($('.languages option:selected').attr('language-id'));
-        $('.script ').text(languages.find(l => l.id === id).template);
+        $('.script ').val(languages.find(l => l.id === id).template);
     })
     
     function createNewUser(){
@@ -106,7 +107,7 @@
         return item && JSON.parse(item) || null;
     }
 
-    function createAnotherUser() {
+    function clearUserData() {
         removeItemFromStorage('User');
         $('.user-part ').addClass('hidden');
         $('.name').val('');
@@ -144,8 +145,8 @@
     
     function changeCreateButtonState(){
         const user = getFromStorage('User');
-        if (user && user.id){
-            $('#btn-create-user').unbind('click').text('Create Another').click(createAnotherUser)   
+        if (user && user.id) {
+            $('#btn-create-user').unbind('click').text('Create Another').click(clearUserData)   
         }
         else {
             $('#btn-create-user').unbind('click').text('Create').click(createNewUser)

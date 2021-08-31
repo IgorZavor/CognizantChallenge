@@ -15,7 +15,7 @@ namespace CognizantChallenge.Compilers.Joodle
             var request =(HttpWebRequest) WebRequest.Create("https://api.jdoodle.com/v1/execute");
             request.Method = "POST";
             request.ContentType = "application/json";
-            script = script.Replace("\t", "").Replace("\n", "").Replace("\r", "");
+            script = script.Replace("\t", " ").Replace("\n", " ");
             using (var streamWriter = new StreamWriter(request.GetRequestStream()))
             {
                 var input = "{\"clientId\": \"" + _clientId + "\",\"clientSecret\":\"" + _clientSecret + "\",\"script\":\"" + script +
